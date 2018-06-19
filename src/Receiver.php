@@ -252,18 +252,18 @@ class Receiver
                 $at_user = strstr($at_user, '</atuserlist>', true);
                 $this->params['at_users'] = explode(',', $at_user);
             }
-            /** 原始数据赋值 */
-            $this->params['msg_id'] = $this->msg['msg_id'];
-            $this->params['msg_source'] = $this->msg['msg_source'];
-            $this->params['description'] = $this->msg['description'];
-            $this->params['from_user'] = $this->msg['from_user'];
-            $this->params['msg_type'] = $this->msg['msg_type'];
-            $this->params['sub_type'] = $this->msg['sub_type'];
-            $this->params['timestamp'] = $this->msg['timestamp'];
-            $this->params['to_user'] = $this->msg['to_user'];
-            $this->params['uin'] = $this->msg['uin'];
-            $this->params['continue'] = $this->msg['continue'];
         }
+        /** 原始数据赋值 */
+        $this->params['msg_id'] = $this->msg['msg_id'];
+        $this->params['msg_source'] = $this->msg['msg_source'];
+        $this->params['description'] = $this->msg['description'];
+        $this->params['from_user'] = $this->msg['from_user'];
+        $this->params['msg_type'] = $this->msg['msg_type'];
+        $this->params['sub_type'] = $this->msg['sub_type'];
+        $this->params['timestamp'] = $this->msg['timestamp'];
+        $this->params['to_user'] = $this->msg['to_user'];
+        $this->params['uin'] = $this->msg['uin'];
+        $this->params['continue'] = $this->msg['continue'];
     }
 
 }
