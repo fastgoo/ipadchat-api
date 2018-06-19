@@ -239,7 +239,7 @@ class Receiver
             /** 处理消息中的xml数据 */
             if (strpos($content, "</") !== false) {
                 $xml = str_replace(["\n", "\t"], '', $content);
-                $this->params['params'] = simplexml_load_string($xml);
+                $this->params['params'] = json_decode(json_encode(simplexml_load_string($xml)));
             }
             /** 处理at_user数据 */
             if (strpos($this->msg['msg_source'], "atuserlist") !== false) {
