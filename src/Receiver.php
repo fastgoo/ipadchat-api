@@ -231,9 +231,14 @@ class Receiver
         $this->params['send_wxid'] = '';
         $this->params['params'] = [];
         if (!empty($this->msg['content'])) {
-            /** 分离发送消息的内容和微信ID */
-            $send_wxid = strstr($this->msg['content'], ":\n", true);
-            $content = strstr($this->msg['content'], ":\n", false);
+            if($this->params['from_type'] == 2){
+                /** 分离发送消息的内容和微信ID */
+                $send_wxid = strstr($this->msg['content'], ":\n", true);
+                $content = strstr($this->msg['content'], ":\n", false);
+            }else{
+                $content = $this->msg['content'];
+                $send_wxid = $this->msg['from_user'];
+            }
             $this->params['content'] = $content;
             $this->params['send_wxid'] = $send_wxid;
             /** 处理消息中的xml数据 */
