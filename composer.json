@@ -1,0 +1,28 @@
+{
+  "name": "fastgoo/padchat-api",
+  "type": "library",
+  "description": "padchat api SDK",
+  "keywords": [
+    "padchat",
+    "api"
+  ],
+  "homepage": "https://phalcon.fastgoo.net",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Mr.Zhou",
+      "email": "773729704@qq.com",
+      "homepage": "https://github.com/fastgoo"
+    }
+  ],
+  "require": {
+    "php": ">=5.6",
+    "guzzlehttp/guzzle": "^6.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "PadChat\\": "src/"
+    }
+  }
+}
+
