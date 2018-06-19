@@ -238,7 +238,7 @@ class Receiver
             $this->params['send_wxid'] = $send_wxid;
             /** 处理消息中的xml数据 */
             if (strpos($content, "</") !== false) {
-                $xml = str_replace(["\n", "\t"], '', $content);
+                $xml = str_replace(["\n", "\t","\\"], '', $content);
                 $this->params['params'] = json_decode(json_encode(simplexml_load_string($xml)));
             }
             /** 处理at_user数据 */
