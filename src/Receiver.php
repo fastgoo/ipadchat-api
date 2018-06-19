@@ -97,7 +97,7 @@ class Receiver
      */
     public function getOriginStr()
     {
-        return urldecode(file_get_contents('php://input'));
+        return file_get_contents('php://input');
     }
 
     /**
@@ -230,6 +230,7 @@ class Receiver
         $this->params['content'] = '';
         $this->params['send_wxid'] = '';
         $this->params['params'] = [];
+        $this->params['at_users'] = [];
         if (!empty($this->msg['content'])) {
             if($this->params['from_type'] == 2){
                 /** 分离发送消息的内容和微信ID */
@@ -250,6 +251,7 @@ class Receiver
             if (strpos($this->msg['msg_source'], "atuserlist") !== false) {
                 $at_user = strstr($this->msg['msg_source'], '<atuserlist>', false);
                 $at_user = strstr($at_user, '</atuserlist>', true);
+                $at_user = str_replace(["<atuserlist>"],'',$at_user);
                 $this->params['at_users'] = explode(',', $at_user);
             }
         }

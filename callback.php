@@ -13,7 +13,7 @@ try {
     $receiver = new \PadChat\Receiver();
     $api = new \PadChat\Api(['secret' => 'test']);
     $api->setWxHandle($receiver->getWxUser());
-    $writeLog($receiver->getParams());
+    $writeLog($receiver->getOriginStr());
     switch ($receiver->getEventType()) {
         case 'login_success':
             $loginInfo = $receiver->getLoginInfo();
