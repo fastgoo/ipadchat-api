@@ -59,6 +59,28 @@ try {
                                 break;
                         }
                     }
+                    if ($receiver->getMsgFromType() == 2 && $receiver->isAtMe() && in_array($receiver->getMsgParams()['send_wxid'], ['wxid_k9jdv2j4n8cf12'])) {
+
+                        /** 发布公告 */
+                        if (strpos($receiver->getContent(), '#发布公告') !== false) {
+                            $str = strstr($receiver->getContent(), '#发布公告');
+                            $str = str_replace(['#发布公告 ', '#发布公告'], '', $str);
+                            $api->setRoomAnnouncement($receiver->getFromUser(), $str);
+                        }
+
+                        /** 删除成员 */
+                        if (strpos($receiver->getContent(), '#踢出') !== false) {
+                            $str = strstr($receiver->getContent(), '#踢出');//
+                            $at_users = $receiver->getMsgParams()['at_users'];
+                            $my_index = array_search('wxid_zizd4h0uzffg22', $at_users);
+                            if ($my_index !== false) {
+                                array_splice($at_users, $my_index, 1);
+                            }
+                            $memberInfo = $api->getContact($at_users[0]);
+                            $api->deleteRoomMember($receiver->getFromUser(), $at_users[0]);
+                            !empty($memberInfo['data']['nick_name']) && $api->sendMsg($receiver->getFromUser(), '成功踢出"' . $memberInfo['data']['nick_name'] . '"');
+                        }
+                    }
                     //$api->sendMsg($receiver->getFromUser(), $receiver->getContent());
                     break;
                 case $receiver::MSG_IMAGE://图片消息
