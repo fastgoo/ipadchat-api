@@ -88,7 +88,8 @@ try {
                     $api->sendMsg($receiver->getFromUser(), "收到卡券分享消息");
                     break;
                 case $receiver::MSG_INVITE_USER://群里面进新人
-                    $api->sendMsg($receiver->getFromUser(), "欢迎新人\"{$this->msg['invite_name']}\"加入群聊，群内禁止机器人测试,禁止广告开车。请自觉查看群公告信息");
+                    $invite_name = $receiver->getMsgParams()['invite_name'];
+                    $api->sendMsg($receiver->getFromUser(), "欢迎新人\"{$invite_name}\"加入群聊，群内禁止机器人测试,禁止广告开车。请自觉查看群公告信息");
                     break;
                 case $receiver::MSG_INVITE_ROOM://
                     break;

@@ -238,7 +238,7 @@ class Receiver
 
         /** 处理消息内容 */
         if (!empty($this->msg['content'])) {
-            if ($this->msg['from_type'] == 2) {
+            if ($this->msg['from_type'] == 2 && strpos($this->msg['content'],":\n") !== false) {
                 /** 分离发送消息的内容和微信ID */
                 $send_wxid = strstr($this->msg['content'], ":\n", true);
                 $content = strstr($this->msg['content'], ":\n", false);
