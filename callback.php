@@ -46,22 +46,38 @@ try {
                     $api->sendMsg($receiver->getFromUser(), "收到定位分享消息");
                     break;
                 case $receiver::MSG_APP_MSG:
-                    $api->sendMsg($receiver->getFromUser(), "收到链接消息");
+                    $api->sendMsg($receiver->getFromUser(), "收到APPMSG消息");
                     break;
                 case $receiver::MSG_CALL_PHONE:
                     $api->sendMsg($receiver->getFromUser(), "收到消息");
                     break;
                 case $receiver::MSG_STATUS_PUSH:
+                    $api->sendMsg($receiver->getFromUser(), "");
                     break;
                 case $receiver::MSG_TELL_PUSH:
                     break;
                 case $receiver::MSG_TELL_INVITE:
                     break;
                 case $receiver::MSG_SMALL_VIDEO:
+                    $api->sendMsg($receiver->getFromUser(), "收到小视频消息");
                     break;
                 case $receiver::MSG_TRANSFER:
+                    $api->sendMsg($receiver->getFromUser(), "收到转账消息");
                     break;
                 case $receiver::MSG_RED_PACKET:
+                    $api->sendMsg($receiver->getFromUser(), "收到图片消息");
+                    break;
+                case $receiver::MSG_SHARE_LINK:
+                    $api->sendMsg($receiver->getFromUser(), "收到链接分享消息");
+                    break;
+                case $receiver::MSG_SHARE_FILE:
+                    $api->sendMsg($receiver->getFromUser(), "收到文件消息");
+                    break;
+                case $receiver::MSG_SHARE_COUPON:
+                    $api->sendMsg($receiver->getFromUser(), "收到卡券分享消息");
+                    break;
+                case $receiver::MSG_INVITE_USER:
+                    $api->sendMsg($receiver->getFromUser(), "欢迎新人加入群聊");
                     break;
                 case $receiver::MSG_INVITE_ROOM:
                     break;

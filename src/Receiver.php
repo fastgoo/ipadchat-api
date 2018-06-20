@@ -71,6 +71,7 @@ class Receiver
     const MSG_SYSTEM = 9999;
     const MSG_WECHAT_PUSH = 10000;
     const MSG_CALLBACK = 10002;
+    const MSG_INVITE_USER = 10010;
 
     /**
      * 初始化，如果没有解析成功，则抛出异常
@@ -88,7 +89,7 @@ class Receiver
         if ($this->getEventType() == 'push') {
             $this->msg = $this->response['data'][0];
             if (empty($this->msg['msg_id'])) {
-                throw new RequestException("用户消息通知解析失败，可能是该用户有大量未读的消息", -1);
+                throw new RequestException("用户消息通知解析失败，可能是该用户有大量未读的消息。信息体：" . json_encode($this->response, JSON_UNESCAPED_UNICODE), -1);
             }
             $this->setParams();
         }
@@ -234,7 +235,11 @@ class Receiver
             strpos($this->msg['from_user'], "gh_") !== false && $this->msg['from_type'] = 3;
             strpos($this->msg['from_user'], "gh_") !== false && $this->msg['from_type'] = 4;
         }
-
+        if ($this->msg['sub_type'] == 10000 && $this->msg['from_type'] == 2) {
+            if (strpos($this->msg['content'], '加入了群聊') !== false) {
+                $this->msg['sub_type'] = $this::MSG_INVITE_USER;
+            }
+        }
         /** 处理消息内容 */
         if (!empty($this->msg['content'])) {
             if ($this->msg['from_type'] == 2) {
@@ -257,8 +262,6 @@ class Receiver
             }
         }
         $this->msg['params'] = $this->getTransferParams($this->msg['content']);
-        var_dump($this->msg['params']);
-        exit;
     }
 
     /**
