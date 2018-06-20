@@ -235,11 +235,7 @@ class Receiver
             strpos($this->msg['from_user'], "gh_") !== false && $this->msg['from_type'] = 3;
             strpos($this->msg['from_user'], "gh_") !== false && $this->msg['from_type'] = 4;
         }
-        if ($this->msg['sub_type'] == 10000 && $this->msg['from_type'] == 2) {
-            if (strpos($this->msg['content'], '加入了群聊') !== false) {
-                $this->msg['sub_type'] = $this::MSG_INVITE_USER;
-            }
-        }
+
         /** 处理消息内容 */
         if (!empty($this->msg['content'])) {
             if ($this->msg['from_type'] == 2) {
@@ -259,6 +255,15 @@ class Receiver
                 $at_user = strstr($at_user, '</atuserlist>', true);
                 $at_user = str_replace(["<atuserlist>"], '', $at_user);
                 $this->msg['at_users'] = explode(',', $at_user);
+            }
+
+            if (in_array($this->msg['sub_type'], [$this::MSG_WECHAT_PUSH, $this::MSG_CALLBACK])) {
+                if (strpos($this->msg['content'], '加入了群聊') !== false) {
+                    $this->msg['sub_type'] = $this::MSG_INVITE_USER;//'邀请\"周先生??\"加入了群聊'
+                    $str = strstr($this->msg['content'], '邀请"');
+                    $str = strstr($str, "\"加入了群聊", true);
+                    $this->msg['invite_name'] = str_replace('邀请"', '', $str);
+                }
             }
         }
         $this->msg['params'] = $this->getTransferParams($this->msg['content']);
