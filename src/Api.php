@@ -105,6 +105,9 @@ class Api
         if (!$user && !$content) {
             throw new RequestException('user或content不能为空', -1);
         }
+        if (!empty($content['title']) && !empty($content['desc']) && !empty($content['url']) && !empty($content['img'])) {
+            $content['app_msg'] = sprintf("<appmsg appid='' sdkver=''><title>%s</title><des>%s</des><action>view</action><type>5</type><showtype>0</showtype><content></content><url>%s</url><thumburl>%s</thumburl></appmsg>", $content['title'], $content['desc'], $content['url'], $content['img']);
+        }
         $req = [];
         if (is_array($content)) {
             $req = $content;

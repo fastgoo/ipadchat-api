@@ -22,13 +22,49 @@ try {
         case 'push':
             switch ($receiver->getMsgType()) {
                 case $receiver::MSG_TEXT://文本消息事件
-                    $api->sendMsg($receiver->getFromUser(), $receiver->getContent());
+                    if ($receiver->getMsgFromType() == 1) {
+                        switch ($receiver->getContent()) {
+                            case "文字":
+                                $api->sendMsg($receiver->getFromUser(), "这是一条文字消息");
+                                break;
+                            case "图片":
+                                $api->sendMsg($receiver->getFromUser(), [
+                                    'image' => '',
+                                    'image_size' => '',
+                                ]);
+                                break;
+                            case "语音":
+                                $api->sendMsg($receiver->getFromUser(), [
+                                    'voice' => '',
+                                    'voice_size' => '',
+                                ]);
+                                break;
+                            case "表情":
+                                $api->sendMsg($receiver->getFromUser(), "[强]");
+                                break;
+                            case "链接":
+                                $api->sendMsg($receiver->getFromUser(), [
+                                    'title' => 'test',
+                                    'desc' => 'test2',
+                                    'url' => 'https://www.baidu.com',
+                                    'img' => 'http://wx.qlogo.cn/mmhead/ver_1/KI3hyxHcWsoicWUzJWUrwVZS1iczNeYNNR0EQ9Hq2KPAgHjF8JP3kicC2wPMrHP5CSNV0s9nTh2vObG49aFvdc5wozZokXC9psVibArhKobPgCU/132'
+                                ]);
+                                break;
+                            case "名片":
+                                $api->sendMsg($receiver->getFromUser(), [
+                                    'contact_wxid' => 'wxid_t7p01dw592qt12',
+                                    'contact_name' => 'ipadchat-api作者【周先生】',
+                                ]);
+                                break;
+                        }
+                    }
+                    //$api->sendMsg($receiver->getFromUser(), $receiver->getContent());
                     break;
                 case $receiver::MSG_IMAGE://图片消息
-                    $api->sendMsg($receiver->getFromUser(), "收到图片消息");
+                    //$api->sendMsg($receiver->getFromUser(), "收到图片消息");
                     break;
                 case $receiver::MSG_VOICE://语音消息
-                    $api->sendMsg($receiver->getFromUser(), "收到语音消息");
+                    //$api->sendMsg($receiver->getFromUser(), "收到语音消息");
                     break;
                 case $receiver::MSG_HEAD_BUFF://不晓得是啥
                     break;
@@ -40,34 +76,34 @@ try {
                     }
                     break;
                 case $receiver::MSG_SHARE_CARD://分享名片消息
-                    $api->sendMsg($receiver->getFromUser(), "收到分享名片消息");
+                    //$api->sendMsg($receiver->getFromUser(), "收到分享名片消息");
                     break;
                 case $receiver::MSG_VIDEO://视频消息
-                    $api->sendMsg($receiver->getFromUser(), "收到视频消息");
+                    //$api->sendMsg($receiver->getFromUser(), "收到视频消息");
                     break;
                 case $receiver::MSG_FACE://表情消息
                     break;
                 case $receiver::MSG_LOCATION://定位消息
-                    $api->sendMsg($receiver->getFromUser(), "收到定位分享消息");
+                    //$api->sendMsg($receiver->getFromUser(), "收到定位分享消息");
                     break;
                 case $receiver::MSG_APP_MSG://appmsg
-                    $api->sendMsg($receiver->getFromUser(), "收到APPMSG消息");
+                    //$api->sendMsg($receiver->getFromUser(), "收到APPMSG消息");
                     break;
                 case $receiver::MSG_CALL_PHONE://语音视频通话
-                    $api->sendMsg($receiver->getFromUser(), "收到消息");
+                    //$api->sendMsg($receiver->getFromUser(), "收到消息");
                     break;
                 case $receiver::MSG_STATUS_PUSH:
-                    $api->sendMsg($receiver->getFromUser(), "");
+                    //$api->sendMsg($receiver->getFromUser(), "");
                     break;
                 case $receiver::MSG_TELL_PUSH:
                     break;
                 case $receiver::MSG_TELL_INVITE:
                     break;
                 case $receiver::MSG_SMALL_VIDEO://小视频消息
-                    $api->sendMsg($receiver->getFromUser(), "收到小视频消息");
+                    //$api->sendMsg($receiver->getFromUser(), "收到小视频消息");
                     break;
                 case $receiver::MSG_TRANSFER://转账记录
-                    $api->sendMsg($receiver->getFromUser(), "收到转账消息");
+                    //$api->sendMsg($receiver->getFromUser(), "收到转账消息");
                     break;
                 case $receiver::MSG_RED_PACKET://红包记录 群收款
                     if ($receiver->getMsgFromType() == 2) {
@@ -84,13 +120,13 @@ try {
                     }
                     break;
                 case $receiver::MSG_SHARE_LINK://分享链接
-                    $api->sendMsg($receiver->getFromUser(), "收到链接分享消息");
+                    //$api->sendMsg($receiver->getFromUser(), "收到链接分享消息");
                     break;
                 case $receiver::MSG_SHARE_FILE://分享文件
-                    $api->sendMsg($receiver->getFromUser(), "收到文件消息");
+                    //$api->sendMsg($receiver->getFromUser(), "收到文件消息");
                     break;
                 case $receiver::MSG_SHARE_COUPON://分享卡券
-                    $api->sendMsg($receiver->getFromUser(), "收到卡券分享消息");
+                    //$api->sendMsg($receiver->getFromUser(), "收到卡券分享消息");
                     break;
                 case $receiver::MSG_INVITE_USER://群里面进新人
                     $invite_name = $receiver->getMsgParams()['invite_name'];

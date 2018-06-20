@@ -25,8 +25,11 @@ try {
     $qrcode = $api->getLoginQrcode();
     var_dump($qrcode['data']['url']);
     /** 获取扫码状态 */
-    while (true){
+    while (true) {
         $qrcodeInfo = $api->getQrcodeStatus();
+        if ($qrcodeInfo['code'] == -1) {
+            exit();
+        }
         var_dump($qrcodeInfo);
         sleep(1);
     }
