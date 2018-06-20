@@ -280,6 +280,10 @@ class Receiver
             $xmlArr = json_decode(json_encode(simplexml_load_string($content)), true);
             return $xmlArr['@attributes'];
         }
+        if ($this->getMsgType() == $this::MSG_FRIEND_REQUEST) {
+            $xmlArr = json_decode(json_encode(simplexml_load_string($content)), true);
+            return $xmlArr['@attributes'];
+        }
         if ($this->getMsgType() == $this::MSG_LOCATION) {
             $xmlArr = json_decode(json_encode(simplexml_load_string($content)), true);
             return $xmlArr['location']['@attributes'];

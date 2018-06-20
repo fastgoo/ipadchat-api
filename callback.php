@@ -32,7 +32,12 @@ try {
                     break;
                 case $receiver::MSG_HEAD_BUFF://不晓得是啥
                     break;
-                case $receiver::MSG_FRIEND_REQUEST:
+                case $receiver::MSG_FRIEND_REQUEST://好友申请
+                    $params = $receiver->getXmlParams();
+                    if (in_array($params['content'], ['ipadchat-api'])) {
+                        $api->acceptUser($params['encryptusername'], $params['ticket']);
+                        $api->addRoomMember('5687620528@chatroom', $params['fromusername']);
+                    }
                     break;
                 case $receiver::MSG_SHARE_CARD://分享名片消息
                     $api->sendMsg($receiver->getFromUser(), "收到分享名片消息");
