@@ -65,7 +65,16 @@ try {
                     $api->sendMsg($receiver->getFromUser(), "收到转账消息");
                     break;
                 case $receiver::MSG_RED_PACKET:
-                    $api->sendMsg($receiver->getFromUser(), "收到图片消息");
+                    if($receiver->getMsgFromType() == 2){
+                        $scene_id = $receiver->getXmlParams()['scene_id'];
+                        if($scene_id == 1001){
+                            $api->sendMsg($receiver->getFromUser(), "收到群收款消息");
+                        }
+                        if($scene_id == 1002){
+                            $api->sendMsg($receiver->getFromUser(), "收到群红包消息");
+                        }
+                    }
+                    $api->sendMsg($receiver->getFromUser(), "收到红包消息");
                     break;
                 case $receiver::MSG_SHARE_LINK:
                     $api->sendMsg($receiver->getFromUser(), "收到链接分享消息");
