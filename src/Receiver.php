@@ -64,6 +64,9 @@ class Receiver
     const MSG_SMALL_VIDEO = 62;
     const MSG_TRANSFER = 2000;
     const MSG_RED_PACKET = 2001;
+    const MSG_SHARE_LINK = 2005;
+    const MSG_SHARE_FILE = 2006;
+    const MSG_SHARE_COUPON = 2016;
     const MSG_INVITE_ROOM = 3000;
     const MSG_SYSTEM = 9999;
     const MSG_WECHAT_PUSH = 10000;
@@ -113,9 +116,9 @@ class Receiver
      * 获取参数
      * @return array
      */
-    public function getParams()
+    public function getMsgParams()
     {
-        return $this->params;
+        return $this->msg;
     }
 
     /**
@@ -146,7 +149,7 @@ class Receiver
      */
     public function getEventType()
     {
-        return !empty($this->response['event']) ? $this->response['event']: '';
+        return !empty($this->response['event']) ? $this->response['event'] : '';
     }
 
     /**
@@ -155,7 +158,7 @@ class Receiver
      */
     public function getMsgType()
     {
-        return $this->params['sub_type'];
+        return $this->msg['sub_type'];
     }
 
     /**
@@ -164,7 +167,7 @@ class Receiver
      */
     public function getContent()
     {
-        return $this->params['content'];
+        return $this->msg['content'];
     }
 
     /**
@@ -173,7 +176,7 @@ class Receiver
      */
     public function getMsgFromType()
     {
-        return $this->params['from_type'];
+        return $this->msg['from_type'];
     }
 
     /**
@@ -182,7 +185,7 @@ class Receiver
      */
     public function getXmlParams()
     {
-        return $this->params['params'];
+        return $this->msg['params'];
     }
 
     /**
@@ -191,7 +194,7 @@ class Receiver
      */
     public function getMsgId()
     {
-        return $this->params['msg_id'];
+        return $this->msg['msg_id'];
     }
 
     /**
@@ -200,7 +203,7 @@ class Receiver
      */
     public function getFromUser()
     {
-        return $this->params['from_user'];
+        return $this->msg['from_user'];
     }
 
     /**
@@ -220,52 +223,120 @@ class Receiver
      */
     private function setParams()
     {
-        $this->params['from_type'] = 1;
+        $this->msg['from_type'] = 1;
+        $this->msg['send_wxid'] = '';
+        $this->msg['params'] = [];
+        $this->msg['at_users'] = [];
+
+        /** 1好友 2群聊 3公众号 4微信 */
         if (!empty($this->msg['from_user'])) {
-            /** 1好友 2群聊 3公众号 4微信 */
-            strpos($this->msg['from_user'], "@chatroom") !== false && $this->params['from_type'] = 2;
-            strpos($this->msg['from_user'], "gh_") !== false && $this->params['from_type'] = 3;
-            strpos($this->msg['from_user'], "gh_") !== false && $this->params['from_type'] = 4;
+            strpos($this->msg['from_user'], "@chatroom") !== false && $this->msg['from_type'] = 2;
+            strpos($this->msg['from_user'], "gh_") !== false && $this->msg['from_type'] = 3;
+            strpos($this->msg['from_user'], "gh_") !== false && $this->msg['from_type'] = 4;
         }
-        $this->params['content'] = '';
-        $this->params['send_wxid'] = '';
-        $this->params['params'] = [];
-        $this->params['at_users'] = [];
+
+        /** 处理消息内容 */
         if (!empty($this->msg['content'])) {
-            if($this->params['from_type'] == 2){
+            if ($this->msg['from_type'] == 2) {
                 /** 分离发送消息的内容和微信ID */
                 $send_wxid = strstr($this->msg['content'], ":\n", true);
                 $content = strstr($this->msg['content'], ":\n", false);
-            }else{
+                $content = str_replace(":\n", '', $content);
+            } else {
                 $content = $this->msg['content'];
                 $send_wxid = $this->msg['from_user'];
             }
-            $this->params['content'] = $content;
-            $this->params['send_wxid'] = $send_wxid;
-            /** 处理消息中的xml数据 */
-            if (strpos($content, "</") !== false) {
-                $xml = str_replace(["\n", "\t","\\"], '', $content);
-                $this->params['params'] = json_decode(json_encode(simplexml_load_string($xml)));
-            }
+            $this->msg['content'] = $content;
+            $this->msg['send_wxid'] = $send_wxid;
             /** 处理at_user数据 */
             if (strpos($this->msg['msg_source'], "atuserlist") !== false) {
                 $at_user = strstr($this->msg['msg_source'], '<atuserlist>', false);
                 $at_user = strstr($at_user, '</atuserlist>', true);
-                $at_user = str_replace(["<atuserlist>"],'',$at_user);
-                $this->params['at_users'] = explode(',', $at_user);
+                $at_user = str_replace(["<atuserlist>"], '', $at_user);
+                $this->msg['at_users'] = explode(',', $at_user);
             }
         }
-        /** 原始数据赋值 */
-        $this->params['msg_id'] = $this->msg['msg_id'];
-        $this->params['msg_source'] = $this->msg['msg_source'];
-        $this->params['description'] = $this->msg['description'];
-        $this->params['from_user'] = $this->msg['from_user'];
-        $this->params['msg_type'] = $this->msg['msg_type'];
-        $this->params['sub_type'] = $this->msg['sub_type'];
-        $this->params['timestamp'] = $this->msg['timestamp'];
-        $this->params['to_user'] = $this->msg['to_user'];
-        $this->params['uin'] = $this->msg['uin'];
-        $this->params['continue'] = $this->msg['continue'];
+        $this->msg['params'] = $this->getTransferParams($this->msg['content']);
+        var_dump($this->msg['params']);
+        exit;
+    }
+
+    /**
+     * XML数据处理
+     * @param $content
+     * @return array
+     */
+    private function getTransferParams($content)
+    {
+        if ($this->getMsgType() == $this::MSG_SHARE_CARD) {
+            $xmlArr = json_decode(json_encode(simplexml_load_string($content)), true);
+            return $xmlArr['@attributes'];
+        }
+        if ($this->getMsgType() == $this::MSG_LOCATION) {
+            $xmlArr = json_decode(json_encode(simplexml_load_string($content)), true);
+            return $xmlArr['location']['@attributes'];
+        }
+        if ($this->getMsgType() == $this::MSG_APP_MSG) {
+            $p = xml_parser_create();
+            xml_parse_into_struct($p, $content, $vals, $index);
+            xml_parser_free($p);
+
+            $type = $vals[$index['TYPE'][0]]['value'];
+            $this->msg['sub_type'] = $type;
+            if ($type == 2000) {//转账
+                $desc = $vals[$index['PAY_MEMO'][0]]['value'];
+                $amount = $vals[$index['FEEDESC'][0]]['value'];
+                $title = $vals[$index['TITLE'][0]]['value'];
+                $content = $vals[$index['CONTENT'][0]]['value'];
+                $url = $vals[$index['URL'][0]]['value'];
+                $pay_sub_type = $vals[$index['PAYSUBTYPE'][0]]['value'];
+                $transcation_id = $vals[$index['TRANSCATIONID'][0]]['value'];
+                $transfer_id = $vals[$index['TRANSFERID'][0]]['value'];
+                $invalid_time = $vals[$index['INVALIDTIME'][0]]['value'];
+                $transfer_time = $vals[$index['BEGINTRANSFERTIME'][0]]['value'];
+                return compact('title', 'content', 'url', 'desc', 'amount', 'pay_sub_type', 'type', 'transcation_id', 'transfer_id', 'transfer_time', 'invalid_time');
+            }
+            if ($type == 2001) {//红包 (群)收款
+                $img = $vals[$index['THUMBURL'][0]]['value'];
+                $title = $vals[$index['TITLE'][0]]['value'];
+                $content = $vals[$index['RECEIVERTITLE'][0]]['value'];
+                $url = $vals[$index['URL'][0]]['value'];
+                $template_id = $vals[$index['TEMPLATEID'][0]]['value'];
+                $native_url = $vals[$index['NATIVEURL'][0]]['value'];
+                /** 1001转账场景 1002红包消息场景 (针对群里面的状态区分) */
+                $scene_id = $vals[$index['SCENEID'][0]]['value'];
+                $pay_msg_id = $vals[$index['PAYMSGID'][0]]['value'];
+                $invalid_time = $vals[$index['INVALIDTIME'][0]]['value'];
+                return compact('title', 'content', 'url', 'img', 'template_id', 'native_url', 'scene_id', 'pay_msg_id', 'invalid_time');
+            }
+            if ($type == 5) {//链接
+                $this->msg['sub_type'] = $this::MSG_SHARE_LINK;
+                $img = $vals[$index['THUMBURL'][0]]['value'];
+                $show_type = $vals[$index['SHOWTYPE'][0]]['value'];
+                $title = $vals[$index['TITLE'][0]]['value'];
+                $content = $vals[$index['DES'][0]]['value'];
+                $url = $vals[$index['URL'][0]]['value'];
+                return compact('title', 'content', 'img', 'url', 'show_type');
+            }
+            if ($type == 6) {//文件
+                $this->msg['sub_type'] = $this::MSG_SHARE_FILE;
+                $img = $vals[$index['THUMBURL'][0]]['value'];
+                $show_type = $vals[$index['SHOWTYPE'][0]]['value'];
+                $title = $vals[$index['TITLE'][0]]['value'];
+                $content = $vals[$index['DES'][0]]['value'];
+                $url = $vals[$index['URL'][0]]['value'];
+                return compact('title', 'content', 'img', 'url', 'show_type');
+            }
+            if ($type == 16) {//卡券消息
+                $this->msg['sub_type'] = $this::MSG_SHARE_COUPON;
+                $img = $vals[$index['THUMBURL'][0]]['value'];
+                $show_type = $vals[$index['SHOWTYPE'][0]]['value'];
+                $title = $vals[$index['TITLE'][0]]['value'];
+                $content = $vals[$index['DES'][0]]['value'];
+                $url = $vals[$index['URL'][0]]['value'];
+                return compact('title', 'content', 'img', 'url', 'show_type');
+            }
+        }
     }
 
 }

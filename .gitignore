@@ -3,3 +3,4 @@ vendor/
 composer.lock
 .DS_Store
 src/.DS_Store
+callback.log
