@@ -114,6 +114,11 @@ class Api
         } else {
             $req['content'] = $content;
         }
+        foreach ($req as $key => &$val) {
+            if (in_array($key, ['content', 'app_msg', 'contact_name'])) {
+                $val = urlencode($val);
+            }
+        }
         $req['user'] = $user;
         $req['at_user'] = $at_user;
         return $this->post(__FUNCTION__, $req);
@@ -129,6 +134,7 @@ class Api
     public function massMsg($users, $content)
     {
         $users = json_encode($users);
+        $content = urlencode($content);
         return $this->post(__FUNCTION__, compact('users', 'content'));
     }
 
@@ -314,6 +320,7 @@ class Api
      */
     public function addUser($params)
     {
+        !empty($params['desc']) && $params['desc'] = urlencode($params['desc']);
         return $this->post(__FUNCTION__, $params);
     }
 
@@ -372,6 +379,7 @@ class Api
      */
     public function setRoomAnnouncement($room, $content)
     {
+        $content = urlencode($content);
         return $this->post(__FUNCTION__, compact('room', 'content'));
     }
 
@@ -384,6 +392,7 @@ class Api
      */
     public function setRoomName($room, $name)
     {
+        $name = urlencode($name);
         return $this->post(__FUNCTION__, compact('room', 'name'));
     }
 
