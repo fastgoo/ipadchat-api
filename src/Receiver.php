@@ -83,7 +83,8 @@ class Receiver
     {
         $this->response = json_decode(urldecode(file_get_contents('php://input')), true);
         if (!$this->response) {
-            throw new RequestException("接收数据解析失败，可能是服务端事件通知推送异常了", -1);
+
+            throw new RequestException("接收数据解析失败，可能是服务端事件通知推送异常了。".file_get_contents('php://input'), -1);
         }
         !empty($config['secret']) && $this->app_secret = $config['secret'];
         if ($this->getEventType() == 'push') {
