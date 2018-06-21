@@ -79,6 +79,6 @@ try {
 - 扫描二维码，备注填写 ipadchat-api 有大小写区分
 - 扫描二维码，备注填写 ipadchat-api 有大小写区分
 - 扫描二维码，备注填写 ipadchat-api 有大小写区分
-<img src="https://resource.fastgoo.net/201806211622073557.JPG" width="240" height="300" alt="图片描述文字"/>
+- <img src="https://resource.fastgoo.net/201806211622073557.JPG" width="240" height="300" alt="图片描述文字"/>
 
 
