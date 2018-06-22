@@ -86,4 +86,6 @@ try {
 - 扫描二维码，备注填写 ipadchat-api 有大小写区分
 <img src="https://resource.fastgoo.net/201806211622073557.JPG" width="240" height="300" alt="图片描述文字"/>
 
-
+## 技术支持
+- 服务支持：周先生 微信号 huoniaojugege
+- 协议支持：大牙 QQ 51166611
