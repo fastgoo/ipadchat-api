@@ -17,6 +17,8 @@ class Receiver
 
     protected $msg;
 
+    protected $originMsg;
+
     /**
      * 微信实例
      */
@@ -84,11 +86,11 @@ class Receiver
         $this->response = json_decode(urldecode(file_get_contents('php://input')), true);
         if (!$this->response) {
 
-            throw new RequestException("接收数据解析失败，可能是服务端事件通知推送异常了。".file_get_contents('php://input'), -1);
+            throw new RequestException("接收数据解析失败，可能是服务端事件通知推送异常了。" . file_get_contents('php://input'), -1);
         }
         !empty($config['secret']) && $this->app_secret = $config['secret'];
         if ($this->getEventType() == 'push') {
-            $this->msg = $this->response['data'][0];
+            $this->msg = $this->originMsg = $this->response['data'][0];
             if (empty($this->msg['msg_id'])) {
                 throw new RequestException("用户消息通知解析失败，可能是该用户有大量未读的消息。信息体：" . json_encode($this->response, JSON_UNESCAPED_UNICODE), -1);
             }
@@ -103,6 +105,15 @@ class Receiver
     public function getOriginStr()
     {
         return file_get_contents('php://input');
+    }
+
+    /**
+     * 获取原始的第一条消息
+     * @return mixed
+     */
+    public function getOriginMsg()
+    {
+        return $this->originMsg;
     }
 
     /**
@@ -239,7 +250,7 @@ class Receiver
 
         /** 处理消息内容 */
         if (!empty($this->msg['content'])) {
-            if ($this->msg['from_type'] == 2 && strpos($this->msg['content'],":\n") !== false) {
+            if ($this->msg['from_type'] == 2 && strpos($this->msg['content'], ":\n") !== false) {
                 /** 分离发送消息的内容和微信ID */
                 $send_wxid = strstr($this->msg['content'], ":\n", true);
                 $content = strstr($this->msg['content'], ":\n", false);
