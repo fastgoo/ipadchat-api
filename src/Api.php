@@ -115,7 +115,7 @@ class Api
             $req['content'] = $content;
         }
         foreach ($req as $key => &$val) {
-            if (in_array($key, ['content', 'app_msg', 'contact_name'])) {
+            if (in_array($key, ['content', 'contact_name'])) {
                 $val = urlencode($val);
             }
         }
