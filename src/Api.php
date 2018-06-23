@@ -409,6 +409,225 @@ class Api
         return $this->post(__FUNCTION__, compact('room', 'user', 'type'));
     }
 
+    /**
+     * 查看红包转账信息
+     * 这里的content是$this->msg['content']
+     * @param $content
+     * @return mixed
+     * @throws RequestException
+     */
+    public function queryTransfer($content)
+    {
+        return $this->post(__FUNCTION__, compact('content'));
+    }
+
+    /**
+     * 接受转账
+     * 这里的content是$this->msg['content']
+     * @param $content
+     * @return mixed
+     * @throws RequestException
+     */
+    public function acceptTransfer($content)
+    {
+        return $this->post(__FUNCTION__, compact('content'));
+    }
+
+    /**
+     * 查看红包
+     * 这里的content是$this->msg['content']
+     * @param $content
+     * @return mixed
+     * @throws RequestException
+     */
+    public function queryRedPacket($content)
+    {
+        return $this->post(__FUNCTION__, compact('content'));
+    }
+
+    /**
+     * 接受红包(主要是为了拿到key然后去领取红包)
+     * 这里的content是$this->msg['content']
+     * @param $content
+     * @return mixed
+     * @throws RequestException
+     */
+    public function receiveRedPacket($content)
+    {
+        return $this->post(__FUNCTION__, compact('content'));
+    }
+
+    /**
+     * 领取红包
+     * 这里的content是$this->msg['content']
+     * key是需要从接受红包返回参数获取
+     * @param $content
+     * @param $key
+     * @return mixed
+     * @throws RequestException
+     */
+    public function openRedPacket($content, $key)
+    {
+        return $this->post(__FUNCTION__, compact('content', 'key'));
+    }
+
+    /**
+     * 获取标签列表
+     * @return mixed
+     * @throws RequestException
+     */
+    public function getLabelList()
+    {
+        return $this->post(__FUNCTION__);
+    }
+
+    /**
+     * 添加标签
+     * @param $content
+     * @return mixed
+     * @throws RequestException
+     */
+    public function addLabel($content)
+    {
+        $content = urlencode($content);
+        return $this->post(__FUNCTION__, compact('content'));
+    }
+
+    /**
+     * 删除标签
+     * @param $id
+     * @return mixed
+     * @throws RequestException
+     */
+    public function deleteLabel($id)
+    {
+        return $this->post(__FUNCTION__, compact('id'));
+    }
+
+    /**
+     * 设置用户标签
+     * @param $id
+     * @param $user
+     * @return mixed
+     * @throws RequestException
+     */
+    public function setLabel($id, $user)
+    {
+        return $this->post(__FUNCTION__, compact('id', 'user'));
+    }
+
+    /**
+     * 查看朋友圈
+     * @param string $last_id 用作翻页
+     * @return mixed
+     * @throws RequestException
+     */
+    public function snsTimeLine($last_id = '')
+    {
+        return $this->post(__FUNCTION__, compact('last_id'));
+    }
+
+    /**
+     * 查看好友的朋友圈
+     * @param $user
+     * @param string $last_id
+     * @return mixed
+     * @throws RequestException
+     */
+    public function snsUserPage($user, $last_id = '')
+    {
+        return $this->post(__FUNCTION__, compact('last_id', 'user'));
+    }
+
+    /**
+     * 朋友圈上传图片
+     * @param $image
+     * @param $size
+     * @return mixed
+     * @throws RequestException
+     */
+    public function snsUpload($image, $size)
+    {
+        return $this->post(__FUNCTION__, compact('image', 'size'));
+    }
+
+    /**
+     * 操作朋友圈动态
+     * @param $id 动态ID
+     * @param $type 操作类型,1为删除朋友圈，4为删除评论，5为取消赞
+     * @param $comment 当type为4时，对应删除评论的id，通过WXSnsObjectDetail接口获取。当type为5时，comment不可用，置为0。
+     * @param $comment_type 评论类型,当删除评论时可用，2或者3.(规律未知)
+     * @return mixed
+     * @throws RequestException
+     */
+    public function snsOp($id, $type, $comment, $comment_type)
+    {
+        return $this->post(__FUNCTION__, compact('id', 'type', 'comment', 'comment_type'));
+    }
+
+    /**
+     * 发布朋友圈
+     * @param $content
+     * @return mixed
+     * @throws RequestException
+     */
+    public function snsSendMoment($content)
+    {
+        $content = urlencode($content);
+        return $this->post(__FUNCTION__, compact('content'));
+    }
+
+    /**
+     * 查看动态详情
+     * @param $id
+     * @return mixed
+     * @throws RequestException
+     */
+    public function snsDetail($id)
+    {
+        return $this->post(__FUNCTION__, compact('id'));
+    }
+
+    /**
+     * 朋友圈评论
+     * @param $user 对方wxid
+     * @param $id 动态id
+     * @param $content 回复内容
+     * @param int $reply_id 回复其他人的评论
+     * @return mixed
+     * @throws RequestException
+     */
+    public function snsComment($user, $id, $content, $reply_id = 0)
+    {
+        $content = urlencode($content);
+        return $this->post(__FUNCTION__, compact('content', 'id', 'user', 'reply_id'));
+    }
+
+    /**
+     * 打招呼
+     * @param $stranger
+     * @param string $content
+     * @return mixed
+     * @throws RequestException
+     */
+    public function sayHello($stranger, $content = '')
+    {
+        $content = urlencode($content);
+        return $this->post(__FUNCTION__, compact('content', 'stranger'));
+    }
+
+    /**
+     * 设置备注
+     * @param $user
+     * @param $content
+     * @return mixed
+     * @throws RequestException
+     */
+    public function setRemark($user, $content)
+    {
+        $content = urlencode($content);
+        return $this->post(__FUNCTION__, compact('content', 'user'));
+    }
 
     /**
      * post 请求

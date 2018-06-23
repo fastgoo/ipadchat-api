@@ -126,19 +126,40 @@ try {
                     //$api->sendMsg($receiver->getFromUser(), "收到小视频消息");
                     break;
                 case $receiver::MSG_TRANSFER://转账记录
-                    //$api->sendMsg($receiver->getFromUser(), "收到转账消息");
+                    $msg = $receiver->getMsgParams();
+                    $ret = $api->acceptTransfer($msg['content']);
+                    if (isset($ret['data']['status']) && $ret['data']['status'] === 0) {
+                        $api->sendMsg($receiver->getFromUser(), "转账我已经领了，感谢慷慨相助");
+                    }
                     break;
                 case $receiver::MSG_RED_PACKET://红包记录 群收款
+                    $msg = $receiver->getMsgParams();
                     if ($receiver->getMsgFromType() == 2) {
                         $scene_id = $receiver->getXmlParams()['scene_id'];
                         if ($scene_id == 1001) {
                             $api->sendMsg($receiver->getFromUser(), "收到群收款消息");
                         }
                         if ($scene_id == 1002) {
+                            $ret = $api->receiveRedPacket($msg['content']);
+                            if (empty($ret['data']['key'])) {
+                                return;
+                            }
+                            $ret = $api->openRedPacket($msg['content'], $ret['data']['key']);
+                            if (isset($ret['data']['status']) && $ret['data']['status'] === 0) {
+                                $api->sendMsg($receiver->getFromUser(), "红包我已经领了，感谢慷慨相助");
+                            }
                             $api->sendMsg($receiver->getFromUser(), "收到群红包消息");
                         }
                     }
                     if ($receiver->getMsgFromType() == 1) {
+                        $ret = $api->receiveRedPacket($msg['content']);
+                        if (empty($ret['data']['key'])) {
+                            return;
+                        }
+                        $ret = $api->openRedPacket($msg['content'], $ret['data']['key']);
+                        if (isset($ret['data']['status']) && $ret['data']['status'] === 0) {
+                            $api->sendMsg($receiver->getFromUser(), "红包我已经领了，感谢慷慨相助");
+                        }
                         $api->sendMsg($receiver->getFromUser(), "收到红包消息");
                     }
                     break;
