@@ -63,25 +63,39 @@ php demo.php //cli运行demo,也可以fpm运行
 ## 快速开始
 
 ```PHP
-require "./vendor/autoload.php";
+**
+ * @var $api
+ * host 请求域名 默认域名https://wxapi.fastgoo.net/
+ * timeout 请求超时时间
+ * secret 请求key
+ */
 $api = new \PadChat\Api(['secret' => 'test']);
+
 try {
     /** 初始化微信实例 */
-    $res = $api->init('回调url'); //如果回调url与接口服务不在一个服务器上那么就需要可外网访问到，不然当有事件通知的时候无法请求到指定的回调地址
-    
+    $res = $api->init('https://webhook.fastgoo.net/callback.php');
+    if(!$res){
+        exit("微信实例获取失败");
+    }
     /** 设置微信实例 */
-    $api->setWxHandle($res['data']['wx_user']);
-    
+    $api->setWxHandle($res['wx_user']);
+    /** 账号密码/账号手机号/token 登录 */
+    $loginRes = $api->login([
+        'username' => '你的账号',
+        'password' => '你的密码',
+        'wx_data' => '不填则安全验证登录'
+    ]);
+    var_dump($loginRes);
     /** 获取登录二维码 */
     $qrcode = $api->getLoginQrcode();
-    
-    //这是二维码的URL地址，可以直接访问到
-    var_dump($qrcode['data']['url']);
-    
-    /** 获取扫码状态,这里只是给你们展示二维码的扫码状态的， */
+    if(!$qrcode){
+        exit("二维码链接获取失败");
+    }
+    var_dump($qrcode['url']);
+    /** 获取扫码状态 */
     while (true) {
         $qrcodeInfo = $api->getQrcodeStatus();
-        if ($qrcodeInfo['code'] == -1) {
+        if (!$qrcodeInfo) {
             exit();
         }
         var_dump($qrcodeInfo);
