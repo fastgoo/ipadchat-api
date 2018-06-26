@@ -78,7 +78,7 @@ try {
                             }
                             $memberInfo = $api->getContact($at_users[0]);
                             $api->deleteRoomMember($receiver->getFromUser(), $at_users[0]);
-                            !empty($memberInfo['data']['nick_name']) && $api->sendMsg($receiver->getFromUser(), '成功踢出"' . $memberInfo['data']['nick_name'] . '"');
+                            !empty($memberInfo['nick_name']) && $api->sendMsg($receiver->getFromUser(), '成功踢出"' . $memberInfo['nick_name'] . '"');
                         }
                     }
                     //$api->sendMsg($receiver->getFromUser(), $receiver->getContent());
@@ -128,7 +128,7 @@ try {
                 case $receiver::MSG_TRANSFER://转账记录
                     $msg = $receiver->getOriginMsg();
                     $ret = $api->acceptTransfer(json_encode($msg, JSON_UNESCAPED_UNICODE));
-                    if (isset($ret['data']['status']) && $ret['data']['status'] === 0) {
+                    if (isset($ret['status']) && $ret['status'] === 0) {
                         $api->sendMsg($receiver->getFromUser(), "转账我已经领了，感谢慷慨相助");
                     }
                     break;
@@ -141,11 +141,11 @@ try {
                         }
                         if ($scene_id == 1002) {
                             $ret = $api->receiveRedPacket(json_encode($msg, JSON_UNESCAPED_UNICODE));
-                            if (empty($ret['data']['key'])) {
+                            if (empty($ret['key'])) {
                                 return;
                             }
-                            $ret = $api->openRedPacket(json_encode($msg, JSON_UNESCAPED_UNICODE), $ret['data']['key']);
-                            if (isset($ret['data']['status']) && $ret['data']['status'] === 0) {
+                            $ret = $api->openRedPacket(json_encode($msg, JSON_UNESCAPED_UNICODE), $ret['key']);
+                            if (isset($ret['status']) && $ret['status'] === 0) {
                                 $api->sendMsg($receiver->getFromUser(), "红包我已经领了，感谢慷慨相助");
                             }
                             $api->sendMsg($receiver->getFromUser(), "收到群红包消息");
@@ -153,11 +153,11 @@ try {
                     }
                     if ($receiver->getMsgFromType() == 1) {
                         $ret = $api->receiveRedPacket(json_encode($msg, JSON_UNESCAPED_UNICODE));
-                        if (empty($ret['data']['key'])) {
+                        if (empty($ret['key'])) {
                             return;
                         }
-                        $ret = $api->openRedPacket(json_encode($msg, JSON_UNESCAPED_UNICODE), $ret['data']['key']);
-                        if (isset($ret['data']['status']) && $ret['data']['status'] === 0) {
+                        $ret = $api->openRedPacket(json_encode($msg, JSON_UNESCAPED_UNICODE), $ret['key']);
+                        if (isset($ret['status']) && $ret['status'] === 0) {
                             $api->sendMsg($receiver->getFromUser(), "红包我已经领了，感谢慷慨相助");
                         }
                         $api->sendMsg($receiver->getFromUser(), "收到红包消息");

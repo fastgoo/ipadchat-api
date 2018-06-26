@@ -73,7 +73,7 @@ class Api
     public function getLoginQrcode()
     {
         $res = $this->post(__FUNCTION__);
-        !empty($res['data']['url']) && $res['data']['url'] = $this->base_uri . $res['data']['url'];
+        !empty($res['url']) && $res['url'] = $this->base_uri . $res['url'];
         return $res;
     }
 
@@ -202,7 +202,7 @@ class Api
     }
 
     /**
-     * 登录（token + wx_data） (username + password + wx_data) (phone + password + wx_data)
+     * 登录（token + wx_data） (username + password + wx_data) (phone + password + wx_data) (request + wx_data)
      * @param $params
      * @return mixed
      * @throws RequestException
@@ -659,6 +659,9 @@ class Api
         if (!$resStr) {
             throw new RequestException("接口返回的数据非JSON格式：" . $response->getBody()->getContents(), -1);
         }
-        return $resStr;
+        if ($resStr['code'] == 1) {
+            return $resStr['data'];
+        }
+        return false;
     }
 }
