@@ -49,15 +49,25 @@ class Receiver
      */
     const PUSH_MESSAGE = 'push';
 
+    //文字消息
     const MSG_TEXT = 1;
+    //图片消息
     const MSG_IMAGE = 3;
+    //语音消息
     const MSG_VOICE = 34;
+    //布吉岛
     const MSG_HEAD_BUFF = 35;
+    //好友请求
     const MSG_FRIEND_REQUEST = 37;
+    //名片消息
     const MSG_SHARE_CARD = 42;
+    //视频消息
     const MSG_VIDEO = 43;
+    //表情消息
     const MSG_FACE = 47;
+    //定位消息
     const MSG_LOCATION = 48;
+    //app
     const MSG_APP_MSG = 49;
     const MSG_CALL_PHONE = 50;
     const MSG_STATUS_PUSH = 51;
@@ -72,6 +82,7 @@ class Receiver
     const MSG_INVITE_ROOM = 3000;
     const MSG_SYSTEM = 9999;
     const MSG_WECHAT_PUSH = 10000;
+    //邀请好友加入群聊
     const MSG_CALLBACK = 10002;
     const MSG_INVITE_USER = 10010;
 
@@ -269,7 +280,7 @@ class Receiver
                 $this->msg['at_users'] = explode(',', $at_user);
             }
 
-            if (in_array($this->msg['sub_type'], [$this::MSG_WECHAT_PUSH, $this::MSG_CALLBACK])) {
+            if (in_array($this->msg['sub_type'], [$this::MSG_WECHAT_PUSH])) {
                 if (strpos($this->msg['content'], '加入了群聊') !== false) {
                     $this->msg['sub_type'] = $this::MSG_INVITE_USER;//'邀请\"周先生??\"加入了群聊'
                     $str = strstr($this->msg['content'], '邀请"');

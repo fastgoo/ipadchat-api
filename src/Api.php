@@ -67,12 +67,13 @@ class Api
 
     /**
      * 获取登录二维码
+     * @param $wx_data
      * @return mixed
      * @throws RequestException
      */
-    public function getLoginQrcode()
+    public function getLoginQrcode($wx_data = '')
     {
-        $res = $this->post(__FUNCTION__);
+        $res = $this->post(__FUNCTION__, compact('wx_data'));
         !empty($res['url']) && $res['url'] = $this->base_uri . $res['url'];
         return $res;
     }
@@ -228,6 +229,17 @@ class Api
      * @throws RequestException
      */
     public function close()
+    {
+        return $this->post(__FUNCTION__);
+    }
+
+    /**
+     * 同步消息
+     * 获取continue字段为0则不需要再同步
+     * @return mixed
+     * @throws RequestException
+     */
+    public function syncMsg()
     {
         return $this->post(__FUNCTION__);
     }
