@@ -9,6 +9,7 @@
 </p>
 
 ---
+中文文档地址： https://www.showdoc.cc/web/#/103814602299962
 
 :gift: ipadchat-api.exe为本地化接口服务程序，为php扩展包提供基础的接口服务。
 
