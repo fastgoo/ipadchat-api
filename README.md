@@ -11,6 +11,8 @@
 ---
 中文文档地址： https://www.showdoc.cc/web/#/103814602299962
 
+管理后台地址： https://ipadchat.fastgoo.net
+
 :gift: ipadchat-api.exe为本地化接口服务程序，为php扩展包提供基础的接口服务。
 
 :tada: exe服务程序需要配置，授权配置信息，不然无法正常使用
