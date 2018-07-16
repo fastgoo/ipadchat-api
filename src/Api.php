@@ -667,7 +667,7 @@ class Api
         if (!$ret) {
             throw new RequestException("未收到任何响应信息", -1);
         }
-        $resStr = json_decode($ret, true);
+        $resStr = json_decode(mb_convert_encoding($ret, 'utf-8', 'utf-8'), true);
         if (!$resStr) {
             throw new RequestException("接口返回的数据非JSON格式：" . $response->getBody()->getContents(), -1);
         }
