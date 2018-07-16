@@ -117,7 +117,7 @@ class Api
         }
         foreach ($req as $key => &$val) {
             if (in_array($key, ['content', 'contact_name'])) {
-                $val = urlencode($val);
+                $val = rawurlencode($val);
             }
         }
         $req['user'] = $user;
@@ -135,7 +135,7 @@ class Api
     public function massMsg($users, $content)
     {
         $users = json_encode($users);
-        $content = urlencode($content);
+        $content = rawurlencode($content);
         return $this->post(__FUNCTION__, compact('users', 'content'));
     }
 
@@ -332,7 +332,7 @@ class Api
      */
     public function addUser($params)
     {
-        !empty($params['desc']) && $params['desc'] = urlencode($params['desc']);
+        !empty($params['desc']) && $params['desc'] = rawurlencode($params['desc']);
         return $this->post(__FUNCTION__, $params);
     }
 
@@ -391,7 +391,7 @@ class Api
      */
     public function setRoomAnnouncement($room, $content)
     {
-        $content = urlencode($content);
+        $content = rawurlencode($content);
         return $this->post(__FUNCTION__, compact('room', 'content'));
     }
 
@@ -404,7 +404,7 @@ class Api
      */
     public function setRoomName($room, $name)
     {
-        $name = urlencode($name);
+        $name = rawurlencode($name);
         return $this->post(__FUNCTION__, compact('room', 'name'));
     }
 
@@ -501,7 +501,7 @@ class Api
      */
     public function addLabel($content)
     {
-        $content = urlencode($content);
+        $content = rawurlencode($content);
         return $this->post(__FUNCTION__, compact('content'));
     }
 
@@ -585,7 +585,7 @@ class Api
      */
     public function snsSendMoment($content)
     {
-        $content = urlencode($content);
+        $content = rawurlencode($content);
         return $this->post(__FUNCTION__, compact('content'));
     }
 
@@ -611,7 +611,7 @@ class Api
      */
     public function snsComment($user, $id, $content, $reply_id = 0)
     {
-        $content = urlencode($content);
+        $content = rawurlencode($content);
         return $this->post(__FUNCTION__, compact('content', 'id', 'user', 'reply_id'));
     }
 
@@ -624,7 +624,7 @@ class Api
      */
     public function sayHello($stranger, $content = '')
     {
-        $content = urlencode($content);
+        $content = rawurlencode($content);
         return $this->post(__FUNCTION__, compact('content', 'stranger'));
     }
 
@@ -637,7 +637,7 @@ class Api
      */
     public function setRemark($user, $content)
     {
-        $content = urlencode($content);
+        $content = rawurlencode($content);
         return $this->post(__FUNCTION__, compact('content', 'user'));
     }
 
