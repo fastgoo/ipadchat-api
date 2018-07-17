@@ -671,9 +671,6 @@ class Api
         if (!$resStr) {
             throw new RequestException("接口返回的数据非JSON格式：" . $response->getBody()->getContents(), -1);
         }
-        if ($resStr['code'] == 1) {
-            return $resStr['data'];
-        }
-        return false;
+        return $resStr['data'];
     }
 }
