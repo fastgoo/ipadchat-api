@@ -89,6 +89,58 @@ class Api
     }
 
     /**
+     * 发送小程序消息
+     * 测试数据
+     [
+        'app_id' => 'wxd3f6cb54399a8489',
+        'wx_id' => 'gh_bc33767b4df6',
+        'icon' => 'http://b.hiphotos.baidu.com/image/pic/item/8326cffc1e178a82a8e4af46fa03738da877e878.jpg',
+        'title' => '测试标题，测试哈哈哈哈',
+        'desc' => '这是描述内容',
+        'url' => 'https://www.zhihu.com/question/23060126/answer/400464283?utm_source=wechat_session&utm_medium=social&utm_oi=977494335025119232',
+        'path' => '/zhihu/answer.html?id=400464283&utm_source=wechat_session&utm_medium=social&utm_oi=977494335025119232',
+        'statextstr' => 'GhQKEnd4ZDNmNmNiNTQzOTlhODQ4OQ==',
+        'attach' => [
+            'url' => '30590201000452305002010002049a53ddb902032f56c10204a0e5e77302045b53f90c042b777875706c6f61645f777869645f7a697a64346830757a6666673232313033315f313533323232393930300204010400030201000400',
+            'md5' => 'b936d3f91e61c3d9f8cd35ce895f4a73',
+            'aeskey' => '689c988d510d4afda28306183f9d1151',
+            'filekey' => 'wxid_zizd4h0uzffg221031_1532229900',
+            'length' => '128715',
+         ],
+     ],
+     * @param $user
+     * @param array $params
+     * @return mixed
+     * @throws RequestException
+     */
+    public function sendWeappMsg($user, array $params)
+    {
+        $obj = '<appmsg appid="{app_id}" sdkver="0"><title>{title}</title><des>{desc}</des><action/><type>36</type><showtype>0</showtype><soundtype>0</soundtype><mediatagname /><messageext /><messageaction /><content /><contentattr>0</contentattr><url>{url}</url><lowurl /><dataurl /><lowdataurl />{appattach}<statextstr>{statextstr}</statextstr><weappinfo><username>{wx_id}@app</username><pagepath>{path}</pagepath><version>37</version><weappiconurl>{icon}</weappiconurl></weappinfo></appmsg>';
+        $attach = '<appattach><totallen>0</totallen><attachid /><emoticonmd5 /><fileext /><cdnthumburl>{url}</cdnthumburl><cdnthumbmd5>{md5}</cdnthumbmd5><cdnthumblength>{length}</cdnthumblength><cdnthumbwidth>{width}</cdnthumbwidth><cdnthumbheight>{height}</cdnthumbheight><cdnthumbaeskey>{aeskey}</cdnthumbaeskey><aeskey>{aeskey}</aeskey><encryver>0</encryver><filekey>{filekey}</filekey></appattach>';
+
+        $obj = str_replace('{title}', !empty($params['title']) ? $params['title'] : '', $obj);
+        $obj = str_replace('{desc}', !empty($params['desc']) ? $params['desc'] : '', $obj);
+        $obj = str_replace('{url}', $params['url'], $obj);
+        $obj = str_replace('{path}', $params['path'], $obj);
+        $obj = str_replace('{statextstr}', !empty($params['statextstr']) ? $params['statextstr'] : '', $obj);
+        $obj = str_replace('{app_id}', $params['app_id'], $obj);
+        $obj = str_replace('{wx_id}', $params['wx_id'], $obj);
+        $obj = str_replace('{icon}', $params['icon'], $obj);
+
+        if (!empty($params['attach']) && is_array($params['attach'])) {
+            $attach = str_replace('{url}', $params['attach']['url'], $attach);
+            $attach = str_replace('{md5}', $params['attach']['md5'], $attach);
+            $attach = str_replace('{length}', $params['attach']['length'], $attach);
+            $attach = str_replace('{width}', !empty($params['attach']['width']) ? $params['attach']['width'] : 0, $attach);
+            $attach = str_replace('{height}', !empty($params['attach']['height']) ? $params['attach']['height'] : 0, $attach);
+            $attach = str_replace('{aeskey}', $params['attach']['aeskey'], $attach);
+            $attach = str_replace('{filekey}', $params['attach']['filekey'], $attach);
+            $obj = str_replace('{appattach}', $attach, $obj);
+        }
+        return $this->sendMsg($user, ['app_msg' => $obj]);
+    }
+
+    /**
      * 发送消息
      * 文本消息 $content 为字符串文字
      * 图片消息 $content['image'](base64编码) $content['image_size'](图片大小)
