@@ -143,8 +143,8 @@ class Api
     /**
      * 发送消息
      * 文本消息 $content 为字符串文字
-     * 图片消息 $content['image'](base64编码) $content['image_size'](图片大小)
-     * 语音消息 $content['voice'](base64编码) $content['voice_size'](语音大小)   silk格式
+     * 图片消息 $content['image_file'] post文件地址
+     * 语音消息 $content['voice_file'] post文件地址 + $content['time'] 消息时间  silk格式
      * 分享名片 $content['contact_wxid']   $content['contact_name']
      * app消息 $content['app_msg'] xml格式字符串，主要用于发送链接
      * @param $user
