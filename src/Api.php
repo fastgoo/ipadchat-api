@@ -91,23 +91,23 @@ class Api
     /**
      * 发送小程序消息
      * 测试数据
-     [
-        'app_id' => 'wxd3f6cb54399a8489',
-        'wx_id' => 'gh_bc33767b4df6',
-        'icon' => 'http://b.hiphotos.baidu.com/image/pic/item/8326cffc1e178a82a8e4af46fa03738da877e878.jpg',
-        'title' => '测试标题，测试哈哈哈哈',
-        'desc' => '这是描述内容',
-        'url' => 'https://www.zhihu.com/question/23060126/answer/400464283?utm_source=wechat_session&utm_medium=social&utm_oi=977494335025119232',
-        'path' => '/zhihu/answer.html?id=400464283&utm_source=wechat_session&utm_medium=social&utm_oi=977494335025119232',
-        'statextstr' => 'GhQKEnd4ZDNmNmNiNTQzOTlhODQ4OQ==',
-        'attach' => [
-            'url' => '30590201000452305002010002049a53ddb902032f56c10204a0e5e77302045b53f90c042b777875706c6f61645f777869645f7a697a64346830757a6666673232313033315f313533323232393930300204010400030201000400',
-            'md5' => 'b936d3f91e61c3d9f8cd35ce895f4a73',
-            'aeskey' => '689c988d510d4afda28306183f9d1151',
-            'filekey' => 'wxid_zizd4h0uzffg221031_1532229900',
-            'length' => '128715',
-         ],
-     ],
+     * [
+     * 'app_id' => 'wxd3f6cb54399a8489',
+     * 'wx_id' => 'gh_bc33767b4df6',
+     * 'icon' => 'http://b.hiphotos.baidu.com/image/pic/item/8326cffc1e178a82a8e4af46fa03738da877e878.jpg',
+     * 'title' => '测试标题，测试哈哈哈哈',
+     * 'desc' => '这是描述内容',
+     * 'url' => 'https://www.zhihu.com/question/23060126/answer/400464283?utm_source=wechat_session&utm_medium=social&utm_oi=977494335025119232',
+     * 'path' => '/zhihu/answer.html?id=400464283&utm_source=wechat_session&utm_medium=social&utm_oi=977494335025119232',
+     * 'statextstr' => 'GhQKEnd4ZDNmNmNiNTQzOTlhODQ4OQ==',
+     * 'attach' => [
+     * 'url' => '30590201000452305002010002049a53ddb902032f56c10204a0e5e77302045b53f90c042b777875706c6f61645f777869645f7a697a64346830757a6666673232313033315f313533323232393930300204010400030201000400',
+     * 'md5' => 'b936d3f91e61c3d9f8cd35ce895f4a73',
+     * 'aeskey' => '689c988d510d4afda28306183f9d1151',
+     * 'filekey' => 'wxid_zizd4h0uzffg221031_1532229900',
+     * 'length' => '128715',
+     * ],
+     * ],
      * @param $user
      * @param array $params
      * @return mixed
@@ -223,35 +223,35 @@ class Api
 
     /**
      * 获取消息图片
-     * @param $image 消息字符串
+     * @param $content 消息字符串
      * @return mixed
      * @throws RequestException
      */
-    public function getMsgImage($image)
+    public function getMsgImage($content)
     {
-        return $this->post(__FUNCTION__, compact('image'));
+        return $this->post(__FUNCTION__, compact('content'));
     }
 
     /**
      * 获取消息视频
-     * @param $video 消息字符串
+     * @param $content 消息字符串
      * @return mixed
      * @throws RequestException
      */
-    public function getMsgVideo($video)
+    public function getMsgVideo($content)
     {
-        return $this->post(__FUNCTION__, compact('video'));
+        return $this->post(__FUNCTION__, compact('content'));
     }
 
     /**
      * 获取消息语音
-     * @param $voice 消息字符串
+     * @param $content 消息字符串
      * @return mixed
      * @throws RequestException
      */
-    public function getMsgVoice($voice)
+    public function getMsgVoice($content)
     {
-        return $this->post(__FUNCTION__, compact('voice'));
+        return $this->post(__FUNCTION__, compact('content'));
     }
 
     /**
@@ -708,9 +708,28 @@ class Api
         !empty($this->config['wx_user']) && $params['wx_user'] = $this->config['wx_user'];
         $params['timestamp'] = time();
         $params['sign'] = Util::makeSign($params, !empty($this->config['secret']) ? $this->config['secret'] : '123');
-        $response = $this->client->request('POST', $this->base_uri . $url, [
-            'form_params' => $params
-        ]);
+        $requestData = [
+            'form_params' => $params,
+            'multipart' => []
+        ];
+
+        /** 处理图片上传机制 */
+        if (!empty($params['image_file'])) {
+            if (file_exists($params['image_file'])) {
+                $body = fopen($params['image_file'], 'r');
+                $requestData['multipart'][] = ['name' => 'image_file', 'contents' => $body];
+            }
+        }
+
+        /** 处理语音上传机制 */
+        if (!empty($params['voice_file'])) {
+            if (file_exists($params['voice_file'])) {
+                $body = fopen($params['voice_file'], 'r');
+                $requestData['multipart'][] = ['name' => 'voice_file', 'contents' => $body];
+            }
+        }
+
+        $response = $this->client->request('POST', $this->base_uri . $url, $requestData);
 
         if ($response->getStatusCode() != 200) {
             throw new RequestException("请求接口失败了，响应状态码：" . $response->getStatusCode(), $response->getStatusCode());
