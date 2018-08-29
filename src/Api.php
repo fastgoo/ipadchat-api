@@ -694,6 +694,123 @@ class Api
     }
 
     /**
+     * 设置代理
+     * @param $proxy 例如 192.168.1.1;8000
+     * @param int $type 默认1 http 2sock4 3sock5
+     * @return mixed
+     * @throws RequestException
+     */
+    public function setProxy($proxy, $type = 1)
+    {
+        return $this->post(__FUNCTION__, compact('proxy', 'type'));
+    }
+
+    /**
+     * 搜索公众号
+     * @param $keyword
+     * @return mixed
+     * @throws RequestException
+     */
+    public function searchMp($keyword)
+    {
+        return $this->post(__FUNCTION__, compact('keyword'));
+    }
+
+    /**
+     * 执行公众号菜单
+     * @param $user
+     * @param $id
+     * @param $key
+     * @return mixed
+     * @throws RequestException
+     */
+    public function operateSubscription($user, $id, $key)
+    {
+        return $this->post(__FUNCTION__, compact('user', 'id', 'key'));
+    }
+
+    /**
+     * 获取公众号信息
+     * @param $user
+     * @return mixed
+     * @throws RequestException
+     */
+    public function getSubscriptionInfo($user)
+    {
+        return $this->post(__FUNCTION__, compact('user'));
+    }
+
+    /**
+     * 获取请求TOKEN
+     * @param $user
+     * @param $url
+     * @param $key
+     * @return mixed
+     * @throws RequestException
+     */
+    public function getRequestToken($user, $url, $key)
+    {
+        return $this->post(__FUNCTION__, compact('user', 'url', 'key'));
+    }
+
+    /**
+     * 请求URL
+     * @param $url
+     * @param $key
+     * @param $uin
+     * @return mixed
+     * @throws RequestException
+     */
+    public function requestUrl($url, $key, $uin)
+    {
+        return $this->post(__FUNCTION__, compact('uin', 'url', 'key'));
+    }
+
+    /**
+     * 同步收藏列表
+     * @param string $key 如果是翻页的话需要传这个key
+     * @return mixed
+     * @throws RequestException
+     */
+    public function syncFav($key = '')
+    {
+        return $this->post(__FUNCTION__, compact('key'));
+    }
+
+    /**
+     * 取消收藏
+     * @param $id
+     * @return mixed
+     * @throws RequestException
+     */
+    public function deleteFav($id)
+    {
+        return $this->post(__FUNCTION__, compact('id'));
+    }
+
+    /**
+     * 添加收藏
+     * @param $content json消息体
+     * @return mixed
+     * @throws RequestException
+     */
+    public function addFav($content)
+    {
+        return $this->post(__FUNCTION__, compact('content'));
+    }
+
+    /**
+     * 获取收藏详情
+     * @param $id
+     * @return mixed
+     * @throws RequestException
+     */
+    public function getFav($id)
+    {
+        return $this->post(__FUNCTION__, compact('id'));
+    }
+
+    /**
      * post 请求
      * @param $url
      * @param $params
@@ -709,8 +826,7 @@ class Api
         $params['timestamp'] = time();
         $params['sign'] = Util::makeSign($params, !empty($this->config['secret']) ? $this->config['secret'] : '123');
         $requestData = [
-            'form_params' => $params,
-            'multipart' => []
+            'query' => $params,
         ];
 
         /** 处理图片上传机制 */
@@ -730,7 +846,6 @@ class Api
         }
 
         $response = $this->client->request('POST', $this->base_uri . $url, $requestData);
-
         if ($response->getStatusCode() != 200) {
             throw new RequestException("请求接口失败了，响应状态码：" . $response->getStatusCode(), $response->getStatusCode());
         }
