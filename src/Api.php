@@ -826,7 +826,7 @@ class Api
         $params['timestamp'] = time();
         $params['sign'] = Util::makeSign($params, !empty($this->config['secret']) ? $this->config['secret'] : '123');
         $requestData = [
-            'query' => $params,
+            'form_params' => $params,
         ];
 
         /** 处理图片上传机制 */
