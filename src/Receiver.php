@@ -96,15 +96,11 @@ class Receiver
     {
         $this->response = json_decode(urldecode(file_get_contents('php://input')), true);
         if (!$this->response) {
-
             throw new RequestException("接收数据解析失败，可能是服务端事件通知推送异常了。" . file_get_contents('php://input'), -1);
         }
         !empty($config['secret']) && $this->app_secret = $config['secret'];
         if ($this->getEventType() == 'push') {
-            $this->msg = $this->originMsg = $this->response['data'][0];
-            if (empty($this->msg['msg_id'])) {
-                throw new RequestException("用户消息通知解析失败，可能是该用户有大量未读的消息。信息体：" . json_encode($this->response, JSON_UNESCAPED_UNICODE), -1);
-            }
+            $this->msg = $this->originMsg = $this->response['data'];
             $this->setParams();
         }
     }
@@ -280,7 +276,7 @@ class Receiver
                 $this->msg['at_users'] = explode(',', $at_user);
             }
 
-            if (in_array($this->msg['sub_type'], [$this::MSG_WECHAT_PUSH,$this::MSG_CALLBACK])) {
+            if (in_array($this->msg['sub_type'], [$this::MSG_WECHAT_PUSH, $this::MSG_CALLBACK])) {
                 if (strpos($this->msg['content'], '加入了群聊') !== false) {
                     $this->msg['sub_type'] = $this::MSG_INVITE_USER;//'邀请\"周先生??\"加入了群聊'
                     $str = strstr($this->msg['content'], '邀请"');

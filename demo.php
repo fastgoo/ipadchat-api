@@ -13,7 +13,7 @@ require "./vendor/autoload.php";
  * timeout 请求超时时间
  * secret 请求key
  */
-$api = new \PadChat\Api(['secret' => 'test']);
+$api = new \PadChat\Api(['secret' => 'test','host'=>'']);
 
 try {
     /** 初始化微信实例 */
