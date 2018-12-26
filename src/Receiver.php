@@ -157,7 +157,7 @@ class Receiver
      */
     public function getLoginInfo()
     {
-        if ($this->response['event'] != 'login_success') {
+        if ($this->response['event_type'] != 'login_success') {
             return [];
         }
         return $this->response['data'];
@@ -169,7 +169,7 @@ class Receiver
      */
     public function getEventType()
     {
-        return !empty($this->response['event']) ? $this->response['event'] : '';
+        return !empty($this->response['event_type']) ? $this->response['event_type'] : '';
     }
 
     /**
