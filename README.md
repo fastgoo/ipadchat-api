@@ -9,7 +9,7 @@
 </p>
 
 ---
-中文文档地址： https://www.showdoc.cc/web/#/103814602299962
+中文文档地址： https://www.showdoc.cc/ipadchatgo?page_id=1346708337106380
 
 管理后台地址： https://ipadchat.fastgoo.net
 
