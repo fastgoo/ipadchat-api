@@ -444,6 +444,18 @@ class Api
     }
 
     /**
+     * 邀请入群，链接
+     * @param $room
+     * @param $user
+     * @return mixed
+     * @throws RequestException
+     */
+    public function inviteRoomMember($room, $user)
+    {
+        return $this->post(__FUNCTION__, compact('room', 'user'));
+    }
+
+    /**
      * 同意进群申请
      * @param $room
      * @param $user
