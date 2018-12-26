@@ -100,6 +100,13 @@ class Receiver
         }
         !empty($config['secret']) && $this->app_secret = $config['secret'];
         if ($this->getEventType() == 'push') {
+            if (!empty($this->response['data']) && is_array($this->response['data'])) {
+                $arr = [];
+                foreach ($this->response['data'] as $key => $val) {
+                    $arr[lcfirst($key)] = $val;
+                }
+                $this->response['data'] = $arr;
+            }
             $this->msg = $this->originMsg = $this->response['data'];
             $this->setParams();
         }
