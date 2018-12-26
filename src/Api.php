@@ -640,38 +640,49 @@ class Api
     }
 
     /**
-     * 查看朋友圈
-     * @param string $last_id 用作翻页
+     * 查看朋友圈动态
+     * @param string $md5_page
+     * @param string $last_id
      * @return mixed
      * @throws RequestException
      */
-    public function snsTimeLine($last_id = '')
+    public function snsTimeLine($md5_page = '', $last_id = '')
     {
-        return $this->post(__FUNCTION__, compact('last_id'));
+        return $this->post(__FUNCTION__, compact('md5_page', 'last_id'));
+    }
+
+    /**
+     * 同步朋友圈
+     * @return mixed
+     * @throws RequestException
+     */
+    public function syncSns()
+    {
+        return $this->post(__FUNCTION__);
     }
 
     /**
      * 查看好友的朋友圈
      * @param $user
-     * @param string $last_id
+     * @param $md5_page
+     * @param string $max_id
      * @return mixed
      * @throws RequestException
      */
-    public function snsUserPage($user, $last_id = '')
+    public function getUserSns($user, $md5_page, $max_id = '')
     {
-        return $this->post(__FUNCTION__, compact('last_id', 'user'));
+        return $this->post(__FUNCTION__, compact('user', 'md5_page', 'max_id'));
     }
 
     /**
      * 朋友圈上传图片
      * @param $image
-     * @param $size
      * @return mixed
      * @throws RequestException
      */
-    public function snsUpload($image, $size)
+    public function uploadImageSns($image)
     {
-        return $this->post(__FUNCTION__, compact('image', 'size'));
+        return $this->post(__FUNCTION__, compact('image'));
     }
 
     /**
@@ -694,9 +705,8 @@ class Api
      * @return mixed
      * @throws RequestException
      */
-    public function snsSendMoment($content)
+    public function sendSns($content)
     {
-        $content = rawurlencode($content);
         return $this->post(__FUNCTION__, compact('content'));
     }
 
