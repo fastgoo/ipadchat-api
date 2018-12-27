@@ -292,7 +292,7 @@ class Receiver
                 $this->msg['at_users'] = explode(',', $at_user);
             }
 
-            if (in_array($this->msg['msgType'], [$this::MSG_WECHAT_PUSH, $this::MSG_CALLBACK])) {
+            if (in_array($this->msg['msgType'], [$this::MSG_WECHAT_PUSH, $this::MSG_CALLBACK, 0])) {
                 if (strpos($this->msg['content'], '加入了群聊') !== false) {
                     $this->msg['msgType'] = $this::MSG_INVITE_USER;//'邀请\"周先生??\"加入了群聊'
                     $str = strstr($this->msg['content'], '邀请"');
