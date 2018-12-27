@@ -894,30 +894,31 @@ class Api
         $params['timestamp'] = time();
         $params['sign'] = Util::makeSign($params, !empty($this->config['secret']) ? $this->config['secret'] : '123');
 
-        $requestData = json_encode($params);
+        $requestData = ['body' => json_encode($params)];
 
         /** 处理图片上传机制 */
         if (!empty($params['image'])) {
             if (file_exists($params['image'])) {
-                $requestData = [
-                    'form_params' => $params,
-                ];
                 $body = fopen($params['image'], 'r');
+                unset($requestData['body']);
                 $requestData['multipart'][] = ['name' => 'image', 'contents' => $body];
+                foreach ($params as $key => $value) {
+                    $requestData['multipart'][] = ['name' => $key, 'contents' => $value];
+                }
             }
         }
 
         /** 处理语音上传机制 */
         if (!empty($params['voice'])) {
             if (file_exists($params['voice'])) {
-                $requestData = [
-                    'form_params' => $params,
-                ];
+                unset($requestData['body']);
                 $body = fopen($params['voice'], 'r');
                 $requestData['multipart'][] = ['name' => 'voice', 'contents' => $body];
+                foreach ($params as $key => $value) {
+                    $requestData['multipart'][] = ['name' => $key, 'contents' => $value];
+                }
             }
         }
-
         $response = $this->client->request('POST', $this->base_uri . $url, $requestData);
         if ($response->getStatusCode() != 200) {
             throw new RequestException("请求接口失败了，响应状态码：" . $response->getStatusCode(), $response->getStatusCode());
