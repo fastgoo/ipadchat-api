@@ -189,6 +189,15 @@ class Receiver
     }
 
     /**
+     * 获取消息接受的用户，一般是自己
+     * @return bool
+     */
+    public function getToUserName()
+    {
+        return $this->msg['toUserName'];
+    }
+
+    /**
      * 获取消息内容
      * @return mixed
      */
