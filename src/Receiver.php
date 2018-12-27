@@ -286,7 +286,7 @@ class Receiver
             $this->msg['send_wxid'] = $send_wxid;
             /** 处理at_user数据 */
             if (strpos($this->msg['msgSource'], "atuserlist") !== false) {
-                $at_user = strstr($this->msg['msg_source'], '<atuserlist>', false);
+                $at_user = strstr($this->msg['msgSource'], '<atuserlist>', false);
                 $at_user = strstr($at_user, '</atuserlist>', true);
                 $at_user = str_replace(["<atuserlist>"], '', $at_user);
                 $this->msg['at_users'] = explode(',', $at_user);
